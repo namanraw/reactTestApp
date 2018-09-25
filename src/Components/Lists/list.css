@@ -1,0 +1,39 @@
+.delete {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #1000ff;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: white;
+  box-shadow: 2px 1px 12px grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.outterdiv {
+  background: white;
+  display: flex;
+  flex: 1;
+  position: relative;
+  border-radius: 1px;
+  box-shadow: 0px 1px 6px;
+  margin: 25px;
+  height: 75px;
+  align-items: center;
+}
+.sno {
+  flex: 1;
+}
+.title {
+  flex: 5;
+  display: flex;
+  justify-content: flex-start;
+}
+.date {
+  flex: 2;
+}
+.time {
+  flex: 2;
+}
