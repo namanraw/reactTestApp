@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import "./link.css";
-import LinkPreview from "./LinkPreview";
 import Loader from "../../Extras/Loaders/Loader";
+import ErrorBox from "./ErrorBox";
+import LinkBox from "./LinkBox";
 
 const BASE_URL = "https://api.urlmeta.org/?url=";
 
@@ -16,8 +17,28 @@ export default class LinkPreviewLayout extends Component {
       error: false
     };
   }
+
+  setDefaultStates = (
+    showLinkPreview = false,
+    error = false,
+    metaData = {},
+    showLoader = false
+  ) => {
+    this.setState({
+      showLinkPreview: showLinkPreview,
+      error: error,
+      metaData: metaData,
+      showLoader: showLoader
+    });
+  };
+
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    let val = e.target.value;
+    let name = e.target.name;
+
+    this.setState({ [name]: val });
+
+    if (val.length === 0) this.setDefaultStates();
   };
 
   handleSubmit = e => {
@@ -32,20 +53,14 @@ export default class LinkPreviewLayout extends Component {
     metaDataRequest
       .then(d => d.json())
       .then(metaData => {
-        if (!metaData.meta)
-          return this.setState({ error: true,showLinkPreview: true, showLoader: false });
+        if (!metaData.meta) return this.setDefaultStates(true, true);
         if (!metaData.meta.image)
           metaData.meta["image"] =
             "https://miro.medium.com/max/678/0*QKJemZKR6vA6hMAj.png";
 
-        this.setState({
-          metaData       : metaData.meta,
-          showLinkPreview: true,
-          showLoader     : false,
-          error          : false
-        });
+        this.setDefaultStates(true, false, metaData.meta, false);
       })
-      .catch(err => console.log(err));
+      .catch(err => this.setDefaultStates(true, true));
   };
   render() {
     return (
@@ -66,9 +81,12 @@ export default class LinkPreviewLayout extends Component {
           </div>
         </form>
         {this.state.showLinkPreview &&
-          !this.state.showLoader && (
-            <LinkPreview error={this.state.error} meta={this.state.metaData} />
-          )}
+          !this.state.showLoader &&
+          (this.state.error ? (
+            <ErrorBox />
+          ) : (
+            <LinkBox meta={this.state.metaData} />
+          ))}
         {this.state.showLoader && <Loader />}
       </div>
     );
